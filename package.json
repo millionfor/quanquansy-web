@@ -1,8 +1,8 @@
 {
-  "name": "react",
+  "name": "quanquansy-web",
   "version": "1.0.0",
-  "description": "react project",
-  "author": "hzy0913",
+  "description": "react quanquansy-web",
+  "author": "quanquan",
   "private": true,
   "scripts": {
     "start": "webpack-dev-server --config build/dev.js",
