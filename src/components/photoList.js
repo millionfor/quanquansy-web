@@ -4,9 +4,16 @@ import axios from 'axios';
 import DetailsList from './detailsList';
 
 class PhotoList extends Component {
+  constructor(props) {
+    super(props);
+  }
   state = {
     isDetails: false,
-    detailsInfo: {}
+    detailsInfo: {},
+    list:[{
+      _id:1,
+      imageView:'https://www.baidu.com/img/baidu_jgylogo3.gif'
+    }]
   };
   _hanlderDetails = async (id) => {
     await axios.get(`/syApi/external/photoDetails?id=${id}`)
@@ -24,8 +31,8 @@ class PhotoList extends Component {
   componentDidMount() {
   }
   render() {
-    const {isDetails, detailsInfo: {data}} = this.state;
     const {list} = this.props;
+    const {isDetails,detailsInfo: {data}} = this.state;
     return (
       <div>
         <div className="list-module listData">
@@ -53,7 +60,7 @@ class PhotoList extends Component {
                 <i className="ico-return"> </i>
               </a>
             </div>
-            <DetailsList detailsInfo={data} />
+            {data && (<DetailsList detailsInfo={data} />)}
           </div>
         )}
       </div>

@@ -1,97 +1,80 @@
-'use strict'
+/*
+   一些处理函数
+*/
 const path = require('path');
-const config = require('../config');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const packageConfig = require('../package.json');
 
-exports.resolve = function (dir) {
-  return path.join(__dirname, '..', dir)
-}
+exports.getEnvAndConf = function(config) {
+   const env = process.env.NODE_ENV;
+   const conf = config[env];
 
-exports.assetsPath = function (_path) {
-  const assetsSubDirectory = process.env.NODE_ENV === 'production'
-    ? config.build.assetsSubDirectory
-    : config.dev.assetsSubDirectory
+   return { env, conf };
+};
 
-  return path.posix.join(assetsSubDirectory, _path)
-}
+exports.resolve = function(...basicPath) {
+   return function(dir) {
+      return path.join(...basicPath, dir || '');
+   };
+};
 
-exports.cssLoaders = function (options) {
-  options = options || {}
+exports.computeEntry = function(config, packageConfig) {
+   const { env, conf } = exports.getEnvAndConf(config);
+   let entry = {};
 
-  const cssLoader = {
-    loader: 'css-loader',
-    options: {
-      sourceMap: options.sourceMap
-    }
-  }
+   if (env === 'production') {
+      entry.app = conf.entryPath || './src/index.js';
+   } else if (env === 'development') {
+      const { port, devServerIp, entryPath } = conf;
+      entry.app = [`webpack-dev-server/client?http://${devServerIp}:${port}`, 'webpack/hot/only-dev-server', entryPath || './src/index.js'];
+   }
 
-  const postcssLoader = {
-    loader: 'postcss-loader',
-    options: {
-      sourceMap: options.sourceMap
-    }
-  }
+   entry.vendor = Object.keys(packageConfig.dependencies);
 
-  function generateLoaders (loader, loaderOptions) {
-    const loaders = options.usePostCSS ? [cssLoader, postcssLoader] : [cssLoader]
-    if (loader) {
-      loaders.push({
-        loader: loader + '-loader',
-        options: Object.assign({}, loaderOptions, {
-          sourceMap: options.sourceMap
-        })
-      })
-    }
+   return entry;
+};
 
-    if (options.extract && loader) {
-      return ExtractTextPlugin.extract({
-        use: loaders,
-        fallback: loader + '-loader'
-      })
-    } else {
-      return [{loader: 'style-loader'}].concat(loaders)
-    }
-  }
+exports.computeOutput = function(config) {
+   const { env, conf } = exports.getEnvAndConf(config);
+   const filename = path.join(conf.assetsSubDirectory, env !== 'production' ? 'js/[name].js' : 'js/[name].[chunkhash:10].js');
+   const chunkFilename = [conf.assetsSubDirectory, env !== 'production'
+         ? 'chunk/[name].js'
+         : 'chunk/[name].[chunkhash:10].js'].join('/');
 
-  return {
-    css: generateLoaders(),
-    postcss: generateLoaders(),
-    less: generateLoaders('less'),
-    sass: generateLoaders('sass', { indentedSyntax: true }),
-    scss: generateLoaders('sass'),
-    stylus: generateLoaders('stylus'),
-    styl: generateLoaders('stylus')
-  }
-}
+   const output = {
+      path: conf.assetsRoot,
+      publicPath: conf.assetsPublicPath,
+      filename,
+      chunkFilename
+   };
 
-exports.styleLoaders = function (options) {
-  const output = []
-  const loaders = exports.cssLoaders(options)
-  for (const extension in loaders) {
-    const loader = loaders[extension]
-    output.push({
-      test: new RegExp('\\.' + extension + '$'),
-      use: loader
-    })
-  }
-  return output
-}
+   return output;
+};
 
-exports.createNotifierCallback = () => {
-  const notifier = require('node-notifier')
+exports.styleLoadersOptions = {
+   dev: {
+      'sass-loader': {
+         outputStyle: 'expanded',
+         sourceMapContents: true,
+         sourceMap: true
+      }
+   },
+   prod: {
+      'sass-loader': {
+         outputStyle: 'expanded'
+      }
+   }
+};
 
-  return (severity, errors) => {
-    if (severity !== 'error') return
+exports.computeStyleLoader = function(isProduction, loaders) {
+   const optionsMap = exports.styleLoadersOptions[isProduction ? 'prod' : 'dev'];
+   const defaultOptions = isProduction ? {} : { sourceMap: true };
 
-    const error = errors[0]
-    const filename = error.file && error.file.split('!').pop()
+   return loaders.map(loader => {
+      const options = optionsMap[loader] || defaultOptions;
 
-    notifier.notify({
-      title: packageConfig.name,
-      message: severity + ': ' + error.name,
-      subtitle: filename || '',
-      icon: path.join(__dirname, 'logo.png')
-    })
-  }
-}
+      return { loader, options };
+   });
+};
+
+exports.shouldReport = function() {
+   return process.argv.some(item => item === '--env.REPORT');
+};

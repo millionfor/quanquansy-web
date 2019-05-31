@@ -1,16 +1,22 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import React, {Component} from 'react';
+import NightCom from './pages/Night/index';
+import {bindActionCreators} from 'redux';
+import {getClassData} from '../modules/night/actions';
 
-import PhotoList from '../components/photoList';
-import HOCFactoryFactory from '../components/getData';
-
-@HOCFactoryFactory({classifysType: 'night'})
 class Night extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    const {list} = this.props;
-    return (<PhotoList list={list} />);
+    return <NightCom {...this.props} />;
   }
 }
 
-export default Night;
-
+export default connect(
+  state => ({ nightState: state.night }),
+  dispatch => ({
+    getClassData: bindActionCreators(getClassData, dispatch),
+  })
+)(Night);

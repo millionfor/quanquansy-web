@@ -1,16 +1,22 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import React, {Component} from 'react';
+import PeopleCom from './pages/People/index';
+import {bindActionCreators} from 'redux';
+import {getClassData} from '../modules/people/actions';
 
-import PhotoList from '../components/photoList';
-import HOCFactoryFactory from '../components/getData';
-
-@HOCFactoryFactory({classifysType: 'people'})
 class People extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    const {list} = this.props;
-    return (<PhotoList list={list} />);
+    return <PeopleCom {...this.props} />;
   }
 }
 
-export default People;
-
+export default connect(
+  state => ({ peopleState: state.people }),
+  dispatch => ({
+    getClassData: bindActionCreators(getClassData, dispatch),
+  })
+)(People);

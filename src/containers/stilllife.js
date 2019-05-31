@@ -1,16 +1,22 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import React, {Component} from 'react';
+import StilllifeCom from './pages/Stilllife/index';
+import {bindActionCreators} from 'redux';
+import {getClassData} from '../modules/stilllife/actions';
 
-import PhotoList from '../components/photoList';
-import HOCFactoryFactory from '../components/getData';
-
-@HOCFactoryFactory({classifysType: 'stilllife'})
 class Stilllife extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    const {list} = this.props;
-    return (<PhotoList list={list} />);
+    return <StilllifeCom {...this.props} />;
   }
 }
 
-export default Stilllife;
-
+export default connect(
+  state => ({ stilllifeState: state.stilllife }),
+  dispatch => ({
+    getClassData: bindActionCreators(getClassData, dispatch),
+  })
+)(Stilllife);

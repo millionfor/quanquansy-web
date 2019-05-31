@@ -1,15 +1,22 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import React, {Component} from 'react';
+import LandscapesCom from './pages/Landscapes/index';
+import {bindActionCreators} from 'redux';
+import {getClassData} from '../modules/landscapes/actions';
 
-import PhotoList from '../components/photoList';
-import HOCFactoryFactory from '../components/getData';
-
-@HOCFactoryFactory({classifysType: 'landscapes'})
 class Landscapes extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    const {list} = this.props;
-    return (<PhotoList list={list} />);
+    return <LandscapesCom {...this.props} />;
   }
 }
 
-export default Landscapes;
+export default connect(
+  state => ({ landscapesState: state.landscapes }),
+  dispatch => ({
+    getClassData: bindActionCreators(getClassData, dispatch),
+  })
+)(Landscapes);

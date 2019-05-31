@@ -1,26 +1,23 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import IndexCom from './pages/Index/index';
 import {bindActionCreators} from 'redux';
+import { getIndexData } from '../modules/index/actions';
 
-import * as homeActions from '../redux/reduces/home';
-import indexData from '../components/indexData';
-import PhotoList from '../components/photoList';
-
-@connect(
-  state => ({home: state.home}),
-  dispatch => bindActionCreators(homeActions, dispatch)
-)
 
 class Index extends Component {
-  state = {
-  };
-  componentDidMount() {
+  constructor(props) {
+    super(props);
   }
   render() {
-    const {photoList} = this.props;
-    return (<PhotoList list={photoList} />);
+    return <IndexCom {...this.props} />;
   }
 }
 
-export default indexData(Index);
+export default connect(
+  state => ({ indexState: state.index }),
+  dispatch => ({
+    getIndexData: bindActionCreators(getIndexData, dispatch),
+  })
+)(Index);

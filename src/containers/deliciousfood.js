@@ -1,16 +1,22 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import React, {Component} from 'react';
+import DeliciousfoodCom from './pages/Deliciousfood/index';
+import {bindActionCreators} from 'redux';
+import {getClassData} from '../modules/deliciousfood/actions';
 
-import PhotoList from '../components/photoList';
-import HOCFactoryFactory from '../components/getData';
-
-@HOCFactoryFactory({classifysType: 'deliciousfood'})
 class Deliciousfood extends Component {
+  constructor(props) {
+    super(props);
+  }
   render() {
-    const {list} = this.props;
-    return (<PhotoList list={list} />);
+    return <DeliciousfoodCom {...this.props} />;
   }
 }
 
-export default Deliciousfood;
-
+export default connect(
+  state => ({ deliciousfoodState: state.deliciousfood }),
+  dispatch => ({
+    getClassData: bindActionCreators(getClassData, dispatch),
+  })
+)(Deliciousfood);
