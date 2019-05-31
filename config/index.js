@@ -25,12 +25,12 @@ module.exports = {
    },
    production: {
       env: { NODE_ENV: JSON.stringify('production') },
-      basicRequestLink: `http://${ip}:9999`, // 生产时设置为服务器地址
+      basicRequestLink: 'https://api.quanquansy.com', // 生产时设置为服务器地址
       entryPath: null, // 默认为 './src/index.js'
       assetsRoot: resolve('dist'), // 编译后的静态资源路径
       assetsSubDirectory: 'static',
       assetsPublicPath: '/', // 发布到哪个目录下就写哪里 最后要加上 /
-      needWorkboxSW: true, // 是否需要 workbox 配置 service worker
+      needWorkboxSW: false, // 是否需要 workbox 配置 service worker
       workboxConfig: null, // workbox 配置 null 表示默认配置
       productionSourceMap: false, // js sourceMap
       bundleAnalyzerReport: utils.shouldReport() // 是否显示 report

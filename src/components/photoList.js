@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+
+import {getPhotoDetails} from '../api/index'
 
 import DetailsList from './detailsList';
 
@@ -10,16 +12,12 @@ class PhotoList extends Component {
   state = {
     isDetails: false,
     detailsInfo: {},
-    list:[{
-      _id:1,
-      imageView:'https://www.baidu.com/img/baidu_jgylogo3.gif'
-    }]
   };
   _hanlderDetails = async (id) => {
-    await axios.get(`/syApi/external/photoDetails?id=${id}`)
+    await getPhotoDetails({id})
       .then(res => {
         this.setState({
-          detailsInfo: res.data
+          detailsInfo: res
         });
         setTimeout(() => {
           this.setState({
