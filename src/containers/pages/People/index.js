@@ -8,7 +8,7 @@ class People extends Component {
   }
   componentWillMount() {
     this.props.getClassData({
-      classifysenname:'people'
+      classifysEnName:'people'
     });
   }
   render() {

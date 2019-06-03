@@ -8,7 +8,7 @@ class Night extends Component {
   }
   componentWillMount() {
     this.props.getClassData({
-      classifysenname:'night'
+      classifysEnName:'night'
     });
   }
   render() {

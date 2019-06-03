@@ -8,7 +8,7 @@ class Stilllife extends Component {
   }
   componentWillMount() {
     this.props.getClassData({
-      classifysenname:'stilllife'
+      classifysEnName:'stilllife'
     });
   }
   render() {

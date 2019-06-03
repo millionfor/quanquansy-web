@@ -78,11 +78,5 @@ module.exports = merge(baseWebpackConfig, {
          modules: false,
          chunks: false
       },
-     proxy:{
-       '/syApi': {
-         target: 'https://api.quanquansy.com/',
-         changeOrigin: true,//是否跨域
-       }
-     }
    }
 });

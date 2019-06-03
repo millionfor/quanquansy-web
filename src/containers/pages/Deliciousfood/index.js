@@ -8,7 +8,7 @@ class Deliciousfood extends Component {
   }
   componentWillMount() {
     this.props.getClassData({
-      classifysenname:'deliciousfood'
+      classifysEnName:'deliciousfood'
     });
   }
   render() {
